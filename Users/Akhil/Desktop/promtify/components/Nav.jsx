@@ -3,21 +3,22 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
-import {signIn, signOut, getProviders} from "next-auth"
+import {signIn, signOut, getProviders, useSession} from "next-auth/react"
 
 const Nav = () => {
-    const [isUserLoggedIn, setIsUserLoggedin] = useState(true);
+    const {data: session} = useSession();
     const [providers, setProviders] = useState(null);
     const [toggle, setToggle] = useState(false);
 
     useEffect(()=>{
-        const setProvider = async ()=>{
+        const setUpProviders = async ()=>{
             const response = await getProviders();
             setProviders(response);
         }
-        setProvider();
+        setUpProviders();
     },[])
 
+    //console.log(response);
   return (
     <nav className='flex-between w-full mb-16 pt-3'>
         <Link href="/" className='flex gap-2 flex-center'>
@@ -34,7 +35,7 @@ const Nav = () => {
         </Link>
         {/* For larger device */}
             <div className='sm:flex hidden'>    
-                {isUserLoggedIn ? (
+                {session?.user ? (
                     <div className='flex gap-3 md:gap-5'>
                         <Link href="/create-prompt" className='black_btn'>
                             Create Post
@@ -43,7 +44,7 @@ const Nav = () => {
                             Sign Out
                         </button>
                         <Link href="/profile">
-                            <Image src="/assets/images/logo.svg"
+                            <Image src={session?.user.image}
                             alt='profile'
                             width={35}
                             height={35}
@@ -64,13 +65,12 @@ const Nav = () => {
                     </>
                 )}
             </div>
-
             {/* Mobile Nav */}
             <div className='sm:hidden flex relative'>
-              {isUserLoggedIn ? (
+              {session?.user ? (
                 <div className='flex'>
                 <Image 
-                src="/assets/images/logo.svg"
+                src={session?.user.image}
                 alt='profile'
                 width={30}
                 height={30}
@@ -82,7 +82,7 @@ const Nav = () => {
                     <div className='dropdown'>
                         <Link href="/profile" 
                         className='dropdown_link'
-                        onClick={()=>{setToggle(false)}}
+                        onClick={()=>{setToggle(false)}} 
                         >
                         My Profile
                         </Link>
