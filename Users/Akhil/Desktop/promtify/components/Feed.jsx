@@ -13,13 +13,41 @@ const PromptCardList = ({data, handleTagClick})=>{
     )
 }
 
-
 const Feed = () => {
   const [searchTxt, setSearchTxt] = useState('');
   const [allPost, setAllPost] = useState([]);
-  const handleChange= ()=>{
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const [searchedResult, setSearchedResult] = useState([]);  
+
+  const filterPrompts = (searchtext) => {
+    const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
+    return allPost.filter(
+      (item) =>
+        regex.test(item.tag) ||
+        regex.test(item.prompt) ||
+        regex.test(item.creator.username)
+    );
+  };
+
+
+  const handleChange= (e)=>{
+    clearTimeout(searchTimeout);
+    setSearchTxt(e.target.value);
     
+    setSearchTimeout(
+      setTimeout(()=>{
+        const searchResult = filterPrompts(e.target.value);
+        setSearchedResult(searchResult);
+      },300)
+      )
   }
+
+  const handleTagClick = (tag)=>{
+    setSearchTxt(tag);
+    const searchResult = filterPrompts(tag);
+    setSearchedResult(searchResult);
+  }
+
   const fetchPosts = async () =>{
     const res = await fetch('/api/prompt');
     const data = await res.json();
@@ -42,10 +70,18 @@ const Feed = () => {
           className='search_input peer'
         />
       </form>
-      <PromptCardList
+      
+  { searchTxt ? (
+        <PromptCardList
+        data={searchedResult}
+        handleTagClick={handleTagClick}
+        />
+      ) :
+      (<PromptCardList
         data={allPost}
-        handleTagClick={()=>{}}
-      />
+        handleTagClick={handleTagClick}
+      />)
+    }
       
     </section>
   )
