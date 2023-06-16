@@ -10,13 +10,19 @@ const Nav = () => {
     const [providers, setProviders] = useState(null);
     const [toggle, setToggle] = useState(false);
 
-    useEffect(()=>{
-        const setUpProviders = async ()=>{
-            const response = await getProviders();
-            setProviders(response);
-        }
-        setUpProviders();
-    },[])
+    // useEffect(()=>{
+    //     const setUpProviders = async ()=>{
+    //         const response = await getProviders();
+    //         setProviders(response);
+    //     }
+    //     setUpProviders();
+    // },[])
+    useEffect(() => {
+        (async () => {
+          const res = await getProviders();
+          setProviders(res);
+        })();
+      }, []);
 
     //console.log(response);
   return (

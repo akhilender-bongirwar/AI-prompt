@@ -19,6 +19,17 @@ const Feed = () => {
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResult, setSearchedResult] = useState([]);  
 
+
+  const fetchPosts = async () =>{
+    const res = await fetch('/api/prompt');
+    const data = await res.json();
+    setAllPost(data);
+  }
+
+  useEffect(()=>{
+    fetchPosts(); 
+  },[]);
+
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
     return allPost.filter(
@@ -48,15 +59,7 @@ const Feed = () => {
     setSearchedResult(searchResult);
   }
 
-  const fetchPosts = async () =>{
-    const res = await fetch('/api/prompt');
-    const data = await res.json();
-    setAllPost(data);
-  }
 
-  useEffect(()=>{
-    fetchPosts();
-  },[]);
 
   return (
     <section className='feed'>

@@ -12,7 +12,7 @@ export const GET = async (req, { params })=>{
             status:200})
     }
     catch (error) {
-        return new Response("Failed to fetch the prompts",{
+        return new Response("Failed to fetch the prompts created by user",{
             status:500})
     }
 }
