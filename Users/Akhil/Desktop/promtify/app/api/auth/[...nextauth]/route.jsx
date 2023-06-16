@@ -38,9 +38,10 @@ const handler = NextAuth({
                 return true;
     
             }catch(error){
-                console.log(error);
+                //console.log(error);
             }
         }
-    }
+    },
+    secret:process.env.NEXT_AUTH_SECRET,
 })
 export {handler as GET, handler as POST };
